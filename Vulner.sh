@@ -48,20 +48,12 @@ sleep 2
 
 function INPUT()
 {
-# 1.0 Getting the User Input
-# 1.1 Get from the user a network to scan.
-# 1.2 Get from the user a name for the output directory.
-# 1.3 Allow the user to choose 'Basic' or 'Full' scans.
-# Here I do 1.1, 1.2 and 1.3 at the same time, to make it more efficient and less cluttered on the terminal-screen.
-
 # Asking the user for input and saving it into a variable
 get_user_input() {
     echo "[*] To run this script, please input the following:"
     echo
     sleep 1
       # Loop until a valid network range is provided.
-      # This loop is a combination of the video from the Cyberium by David Shiffman, myself and ChatGPT.
-      # This is mainly changed because I did not want to exit the script on a wrong network-range, but retype it if needed.
       while true
       do
       read -p "[*] Enter the desired network-range to scan (example: 8.8.8.8/24): " NETWORK
@@ -92,7 +84,6 @@ get_user_input() {
 }
 
 # Loop until the user confirms the input is correct.
-# I simply copied this while-loop from a previous project and re-made it to fit this project. 
 while true
 do
     get_user_input
@@ -135,7 +126,6 @@ echo
 
 
 
-#2.1.1 Have a built-in passwordlist to check for weak passwords. and 2.1.2 Allow the user to supply their own password list are here done together in one.
 read -p "Do you wish to supply your own password list?(y/n) " REPLY
 if [[ $REPLY = Y || $REPLY = y ]]
 then
@@ -170,7 +160,7 @@ fi
 
 
 
-#2.1.1.1 I also made a built-in Usernamelist to check for login-credentials to use with whichever tool needs it (Hydra, Medusa and so on)
+# I also made a built-in Usernamelist to check for login-credentials to use with whichever tool needs it (Hydra, Medusa and so on)
 read -p "Do you wish to supply your own username list?(y/n) " RESPONSE
 if [[ $RESPONSE = Y || $RESPONSE = y ]]
 then
@@ -219,14 +209,14 @@ echo
 
 
 
-# 1.3.1 Basic: scans the network for TCP and UDP, including the service version and weak passwords.
+# Basic: scans the network for TCP and UDP, including the service version and weak passwords.
 echo "[*] Initiating a basic scan: scans the network for TCP and UDP, including the service version on the given network-range $NETWORK, this may take some time..."
 # Here the command is running both TCP and UDP, TCP first and then UDP, which will take some time unfortunately, since it scans all the 65535 available ports on both the scans.
 echo
 echo "[!] Initiating open-port scan on the given network-range to see which hosts are up and open. Output located in the directory ./$DIRECTORY/$ANSWER/OPENPORT_output.txt"
 # To avoid too much clutter/output on the terminal-screen I chose to send the output to dev/null.
 # Here I'm excluding my own physical machines IP's as I don't want/need to include them in my nmap-scans
-nmap $NETWORK --exclude 192.168.246.1,192.168.246.2 -p- --open 2>/dev/null | tee ./$DIRECTORY/$ANSWER/OPENPORT_output.txt > /dev/null
+nmap $NETWORK -p- --open 2>/dev/null | tee ./$DIRECTORY/$ANSWER/OPENPORT_output.txt > /dev/null
 echo "[*] Open-port scan complete. Now showing the found IP-addresses:"
 echo
 echo "[*] Locating IP-addresses from within the OPENPORT_output.txt file, and saving them into ./$DIRECTORY/$ANSWER/IPS.txt"
@@ -262,7 +252,7 @@ echo
 
 
 
-#2.0 Weak Credentials
+#2 Weak Credentials
 # Here I make the directories for the weak credentials and move it into $DIRECTORY
 mkdir ./CREDS
 chmod 777 ./CREDS
@@ -327,8 +317,7 @@ echo
 
 echo "[!] Initiating NMAP open-port scan on the given network-range to see which hosts are up and open. Output located in the directory ./$DIRECTORY/$ANSWER/OPENPORT_output.txt"
 # To avoid too much clutter/output on the terminal-screen I chose to send the output to dev/null.
-# Here I'm excluding my own physical machines IP's as I don't want/need to include them in my nmap-scans
-nmap $NETWORK --exclude 192.168.246.1,192.168.246.2 -p- --open 2>/dev/null | tee ./$DIRECTORY/$ANSWER/OPENPORT_output.txt > /dev/null
+nmap $NETWORK -p- --open 2>/dev/null | tee ./$DIRECTORY/$ANSWER/OPENPORT_output.txt > /dev/null
 echo "[*] Open-port scan complete. Now showing the found IP-addresses:"
 echo
 
@@ -363,7 +352,7 @@ echo
 
 
 
-#2.0 Weak Credentials
+#2 Weak Credentials
 # Here I make the directories for the weak credentials and move it into $DIRECTORY
 mkdir ./CREDS
 chmod 777 ./CREDS
@@ -417,7 +406,7 @@ for file in ./$DIRECTORY/$ANSWER/CREDS/*
 done
 
 
-#3.0 Mapping Vulnerabilities + 3.1 Mapping vulnerabilities should only take place if Full was chosen. + 3.2 Display potential vulnerabilities via NSE and Searchsploit.
+#3 Mapping Vulnerabilities
 for i in $IPS
 do
 nmap -sV $IPS --script=vulners.nse -oN VULNERABILITIES.txt > /dev/null 2>&1
