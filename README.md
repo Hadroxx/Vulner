@@ -45,7 +45,6 @@ No external dependencies needed
 - ✅ Kali Linux
 - ✅ Ubuntu 20.04–22.04
 - ✅ Debian 11
-- ✅ Parrot OS
 
 ---
 
