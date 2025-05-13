@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Projectname and creator:
-# Cyber-Security project nr 4: PENETRATION TESTING | PROJECT: VULNER
+# Cyber-Security PROJECT: VULNER
 # Creator of the project: Hadroxx
 
 
@@ -88,7 +88,7 @@ while true
 do
     get_user_input
     
-    # 1.4 Make sure the input is valid.
+    # Make sure the input is valid.
     echo
     echo
     echo "[*] Desired network-range specified: $NETWORK"
